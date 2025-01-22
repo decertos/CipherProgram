@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>204</width>
-    <height>274</height>
+    <width>191</width>
+    <height>244</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Главное меню</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="atbash">
@@ -41,6 +41,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="polibium">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -54,6 +57,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="vizhener">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -66,7 +72,10 @@
      <string>Шифр Виженера</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="vizhener_2">
+   <widget class="QPushButton" name="custom">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -85,7 +94,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>204</width>
+     <width>191</width>
      <height>26</height>
     </rect>
    </property>

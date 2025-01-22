@@ -6,22 +6,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>397</width>
-    <height>305</height>
+    <width>400</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Шифр Атбаш</string>
+   <string>Form</string>
   </property>
   <property name="toolTip">
-   <string/>
+   <string extracomment="Сдвиг вправо положительный, влево - отрицательный"/>
   </property>
-  <widget class="QLabel" name="title">
+  <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>181</width>
+     <width>141</width>
      <height>31</height>
     </rect>
    </property>
@@ -31,30 +31,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Шифр Атбаш</string>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="deciphered">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>70</y>
-     <width>251</width>
-     <height>71</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>50</y>
-     <width>151</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Расшифрованный текст</string>
+    <string>Шифр Цезаря</string>
    </property>
   </widget>
   <widget class="QPlainTextEdit" name="ciphered">
@@ -67,7 +44,43 @@
     </rect>
    </property>
   </widget>
+  <widget class="QPushButton" name="decipher_button">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>170</y>
+     <width>111</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Расшифровать</string>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="deciphered">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>70</y>
+     <width>251</width>
+     <height>71</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>50</y>
+     <width>151</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Расшифрованный текст</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -78,32 +91,6 @@
    </property>
    <property name="text">
     <string>Зашифрованный текст</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_3">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>250</y>
-     <width>71</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Алфавит</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="alphabet">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>270</y>
-     <width>251</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>абвгдеёжзийклмнопрстуфхцчшщъыьэюя</string>
    </property>
   </widget>
   <widget class="QPushButton" name="cipher_button">
@@ -119,17 +106,56 @@
     <string>Зашифровать</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="decipher_button">
+  <widget class="QLineEdit" name="alphabet">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>170</y>
-     <width>111</width>
-     <height>28</height>
+     <x>10</x>
+     <y>270</y>
+     <width>251</width>
+     <height>22</height>
     </rect>
    </property>
    <property name="text">
-    <string>Расшифровать</string>
+    <string>абвгдеёжзийклмнопрстуфхцчшщъыьэюя</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>250</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Алфавит</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>250</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Сдвиг</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="shift">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>270</y>
+     <width>41</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="toolTipDuration">
+    <number>5</number>
    </property>
   </widget>
  </widget>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>191</width>
-    <height>244</height>
+    <width>189</width>
+    <height>265</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,7 +58,7 @@
    </widget>
    <widget class="QPushButton" name="vizhener">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -72,7 +72,7 @@
      <string>Шифр Виженера</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="custom">
+   <widget class="QPushButton" name="vizhener_key">
     <property name="enabled">
      <bool>false</bool>
     </property>
@@ -81,11 +81,12 @@
       <x>20</x>
       <y>170</y>
       <width>151</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>Добавить свой шифр</string>
+     <string>Подбор ключа
+Виженера</string>
     </property>
    </widget>
   </widget>
@@ -94,7 +95,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>191</width>
+     <width>189</width>
      <height>26</height>
     </rect>
    </property>

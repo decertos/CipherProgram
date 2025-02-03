@@ -12,6 +12,7 @@ class MainWindow(QMainWindow):
         self.caesar.clicked.connect(self.caesar_open)
         self.vizhener.clicked.connect(self.vizhener_open)
         self.vizhener_key.clicked.connect(self.vizhener_decrypt_open)
+        self.polibium.clicked.connect(self.polibium_open)
 
     def atbash_open(self):
         self.atbashWindow = Atbash()
@@ -28,6 +29,10 @@ class MainWindow(QMainWindow):
     def vizhener_decrypt_open(self):
         self.vizhenerDecryptWindow = VizhenerDecrypt()
         self.vizhenerDecryptWindow.show()
+
+    def polibium_open(self):
+        self.polibiumWindow = PolibiumBoard()
+        self.polibiumWindow.show()
 
 
 class Atbash(QWidget):
@@ -259,6 +264,134 @@ class VizhenerDecrypt(QWidget):
             key += from_indexes_lower[key_symbol]
 
         self.key.setPlainText(key)
+
+
+class PolibiumBoard(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi("uis/polibium_board.ui", self)
+        self.cipher_button.clicked.connect(self.cipher)
+        self.decipher_button.clicked.connect(self.decipher)
+
+        board = []
+        length = -1
+        x_length, y_length = 0, 0
+        for i in self.board.toPlainText().split("\n"):
+            board.append(i.strip("\n"))
+            if length == -1:
+                length = len(board[-1])
+                x_length = length
+            else:
+                if length != len(board[-1]):
+                    self.infoLabel.setText("Длины строк\nне совпадают")
+                    return
+        y_length = len(board)
+
+        self.cipher_value.setMaximum(y_length)
+
+    def cipher(self):
+        board = []
+        length = -1
+        self.infoLabel.setText("")
+        all_symbols = set()
+
+        x_length, y_length = 0, 0
+        for i in self.board.toPlainText().split("\n"):
+            board.append(i.strip("\n"))
+            for j in board[-1]:
+                set_length = len(all_symbols)
+                all_symbols.add(j)
+                if set_length == len(all_symbols):
+                    self.infoLabel.setText("Символы доски\nне уникальные")
+                    return
+            if length == -1:
+                length = len(board[-1])
+                x_length = length
+            else:
+                if length != len(board[-1]):
+                    self.infoLabel.setText("Длины строк\nне совпадают")
+                    return
+        y_length = len(board)
+
+        self.cipher_value.setMaximum(y_length)
+
+        text = self.deciphered.toPlainText()
+        from_indexes_lower = {}
+        to_indexes_lower = {}
+        for i in range(len(board)):
+            for j in range(len(board[i])):
+                from_indexes_lower[(i, j)] = board[i][j]
+                to_indexes_lower[board[i][j]] = (i, j)
+
+        dx, dy, length = 0, 0, self.cipher_value.value()
+        values = {"вверх": (0, -1), "вправо": (1, 0),
+                  "вниз": (0, 1), "влево": (-1, 0)}
+        dx, dy = values[self.cipher_direction.currentText()]
+        dx, dy = dx * length, dy * length
+        ciphered_text = ""
+        for symbol in text:
+            if to_indexes_lower.get(symbol.lower(), None) is None:
+                self.infoLabel.setText("В тексте есть\nсимволы не\nиз доски")
+                ciphered_text += symbol
+                continue
+            symbol_index = to_indexes_lower[symbol.lower()]
+            new_symbol_index = ((symbol_index[0] + dy) % y_length, (symbol_index[1] + dx) % x_length)
+            ciphered_text += from_indexes_lower[new_symbol_index].lower() if symbol.islower() \
+                else from_indexes_lower[new_symbol_index].upper()
+
+        self.ciphered.setPlainText(ciphered_text)
+
+    def decipher(self):
+        board = []
+        length = -1
+        self.infoLabel.setText("")
+        all_symbols = set()
+
+        x_length, y_length = 0, 0
+        for i in self.board.toPlainText().split("\n"):
+            board.append(i.strip("\n"))
+            for j in board[-1]:
+                set_length = len(all_symbols)
+                all_symbols.add(j)
+                if set_length == len(all_symbols):
+                    self.infoLabel.setText("Символы доски\nне уникальные")
+                    return
+            if length == -1:
+                length = len(board[-1])
+                x_length = length
+            else:
+                if length != len(board[-1]):
+                    self.infoLabel.setText("Длины строк\nне совпадают")
+                    return
+        y_length = len(board)
+
+        self.cipher_value.setMaximum(y_length)
+
+        text = self.ciphered.toPlainText()
+        from_indexes_lower = {}
+        to_indexes_lower = {}
+        for i in range(len(board)):
+            for j in range(len(board[i])):
+                from_indexes_lower[(i, j)] = board[i][j]
+                to_indexes_lower[board[i][j]] = (i, j)
+
+        dx, dy, length = 0, 0, self.cipher_value.value()
+        values = {"вверх": (0, -1), "вправо": (1, 0),
+                  "вниз": (0, 1), "влево": (-1, 0)}
+        dx, dy = values[self.cipher_direction.currentText()]
+        dx, dy = -dx * length, -dy * length
+        deciphered_text = ""
+        for symbol in text:
+            if to_indexes_lower.get(symbol.lower(), None) is None:
+                self.infoLabel.setText("В тексте есть\nсимволы не\nиз доски")
+                deciphered_text += symbol
+                continue
+            symbol_index = to_indexes_lower[symbol.lower()]
+            new_symbol_index = ((symbol_index[0] + dy) % y_length, (symbol_index[1] + dx) % x_length)
+            deciphered_text += from_indexes_lower[new_symbol_index].lower() if symbol.islower() \
+                else from_indexes_lower[new_symbol_index].upper()
+
+        self.deciphered.setPlainText(deciphered_text)
 
 
 

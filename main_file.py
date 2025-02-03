@@ -11,6 +11,7 @@ class MainWindow(QMainWindow):
         self.atbash.clicked.connect(self.atbash_open)
         self.caesar.clicked.connect(self.caesar_open)
         self.vizhener.clicked.connect(self.vizhener_open)
+        self.vizhener_key.clicked.connect(self.vizhener_decrypt_open)
 
     def atbash_open(self):
         self.atbashWindow = Atbash()
@@ -23,6 +24,10 @@ class MainWindow(QMainWindow):
     def vizhener_open(self):
         self.vizhenerWindow = Vizhener()
         self.vizhenerWindow.show()
+
+    def vizhener_decrypt_open(self):
+        self.vizhenerDecryptWindow = VizhenerDecrypt()
+        self.vizhenerDecryptWindow.show()
 
 
 class Atbash(QWidget):
@@ -210,6 +215,51 @@ class Vizhener(QWidget):
                 else from_indexes_lower[new_symbol_index].upper()
 
         self.deciphered.setPlainText(deciphered_text)
+
+
+class VizhenerDecrypt(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi("uis/vizhener_decrypt.ui", self)
+
+        self.get_key_button.clicked.connect(self.get_key)
+
+    def get_key(self):
+        plain_text = self.deciphered.toPlainText()
+        ciphered = self.ciphered.toPlainText()
+        alphabet = self.alphabet.text()
+        from_indexes_lower = {i: alphabet[i].lower() for i in range(len(alphabet))}
+        to_indexes_lower = {alphabet[i].lower(): i for i in range(len(alphabet))}
+
+        self.infoLabel.setText("")
+
+        if len(ciphered) != len(plain_text):
+            self.infoLabel.setText("Длины текстов\nне совпадают")
+            return
+
+        for i in range(len(plain_text)):
+            if to_indexes_lower.get(plain_text[i].lower(), None) is None:
+                self.infoLabel.setText("Есть символы\nне из алфавита")
+                break
+            elif to_indexes_lower.get(ciphered[i].lower(), None) is None:
+                self.infoLabel.setText("Есть символы\nне из алфавита")
+                break
+
+        ROT = int(self.rot1.isChecked())
+        key = ""
+
+        for i in range(len(plain_text)):
+            if to_indexes_lower.get(plain_text[i].lower(), None) is None:
+                continue
+            if to_indexes_lower.get(ciphered[i].lower(), None) is None:
+                continue
+            plain_text_index = to_indexes_lower[plain_text[i].lower()]
+            ciphered_index = to_indexes_lower[ciphered[i].lower()]
+            key_symbol = (ciphered_index - plain_text_index - ROT) % len(alphabet)
+            key += from_indexes_lower[key_symbol]
+
+        self.key.setPlainText(key)
+
 
 
 if __name__ == "__main__":

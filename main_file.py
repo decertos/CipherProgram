@@ -2,6 +2,9 @@ import sys
 from PyQt6.QtWidgets import QWidget, QMainWindow, QApplication
 from itertools import cycle
 from PyQt6 import uic
+import sqlite3
+from os.path import isfile
+import pyperclip
 
 
 class MainWindow(QMainWindow):
@@ -13,6 +16,26 @@ class MainWindow(QMainWindow):
         self.vizhener.clicked.connect(self.vizhener_open)
         self.vizhener_key.clicked.connect(self.vizhener_decrypt_open)
         self.polibium.clicked.connect(self.polibium_open)
+        self.alphabets.clicked.connect(self.alphabets_open)
+
+        created = True
+        if not isfile("alphabets.db"):
+            created = False
+        conn = sqlite3.connect("alphabets.db")
+        cur = conn.cursor()
+        cur.execute("""CREATE TABLE IF NOT EXISTS Alphabets (title TEXT UNIQUE, alphabet TEXT)""")
+        conn.commit()
+        if not created:
+            examples = {"русский": "абвгдеёжзийклмнопрстуфхцчшщъыьэюя",
+                        "русский (без ё)": "абвгдежзийклмнопрстуфхцчшщъыьэюя",
+                        "английский": "abcdefghijklmnopqrstuvwxyz",
+                        "доска Полибия (русский без ё)": "абвгдежз\nийклмноп\nрстуфхцч\nшщъыьэюя",
+                        "доска Полибия (английский)": "abcdef\nghijkl\nmnopqr\nstuvwx\nyz    "}
+            for i in examples:
+                cur.execute("""INSERT INTO Alphabets (title, alphabet) VALUES (?, ?)""", (i, examples[i]))
+                conn.commit()
+        cur.close()
+        conn.close()
 
     def atbash_open(self):
         self.atbashWindow = Atbash()
@@ -33,6 +56,10 @@ class MainWindow(QMainWindow):
     def polibium_open(self):
         self.polibiumWindow = PolibiumBoard()
         self.polibiumWindow.show()
+
+    def alphabets_open(self):
+        self.alphabetsWindow = AlphabetsMenu()
+        self.alphabetsWindow.show()
 
 
 class Atbash(QWidget):
@@ -393,6 +420,120 @@ class PolibiumBoard(QWidget):
 
         self.deciphered.setPlainText(deciphered_text)
 
+
+class AlphabetsMenu(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi("uis/alphabets.ui", self)
+        self.update_list()
+
+        self.copy_button.clicked.connect(self.copy_alphabet)
+        self.create_button.clicked.connect(self.add_alphabet)
+        self.delete_button.clicked.connect(self.delete_alphabet)
+
+        self.alphabetSelect.currentTextChanged.connect(self.set_alphabet)
+
+    def set_alphabet(self):
+        current_alphabet = self.alphabetSelect.currentText()
+        if not current_alphabet:
+            return
+        self.alphabet.setPlainText(self.alphabets[current_alphabet])
+        self.length.setText(f"Длина: {len(self.alphabets[current_alphabet])}")
+
+    def copy_alphabet(self):
+        alphabet = self.alphabet.toPlainText()
+        pyperclip.copy(alphabet)
+
+    def update_list(self):
+        self.alphabetSelect.clear()
+        self.alphabets = []
+        conn = sqlite3.connect("alphabets.db")
+        cur = conn.cursor()
+        all_data = cur.execute("""SELECT * FROM Alphabets""").fetchall()
+        self.alphabets = {}
+        for i in all_data:
+            self.alphabets[i[0]] = i[1]
+        cur.close()
+        conn.close()
+        first_alphabet = None
+        for i in self.alphabets:
+            if first_alphabet is None:
+                first_alphabet = self.alphabets[i]
+            title = i
+            self.alphabetSelect.addItem(title)
+
+        if self.alphabets:
+            self.alphabet.setPlainText(first_alphabet)
+            self.length.setText(f"Длина: {len(first_alphabet)}")
+        else:
+            self.length.setText("Нет длины")
+
+    def add_alphabet(self):
+        self.addAlphabetWindow = AddAlphabet(self)
+        self.addAlphabetWindow.show()
+
+    def delete_alphabet(self):
+        self.deleteAlphabetWindow = DeleteAlphabet(self)
+        self.deleteAlphabetWindow.show()
+
+
+class AddAlphabet(QWidget):
+    def __init__(self, parent):
+        super().__init__()
+        uic.loadUi("uis/create_alphabet.ui", self)
+        self.window_parent = parent
+        self.create_button.clicked.connect(self.add_alphabet)
+        self.cancel_button.clicked.connect(self.cancel_creating)
+
+    def add_alphabet(self):
+        title, alphabet = self.title.text(), self.alphabet.toPlainText()
+        self.infoLabel.setText("")
+        for i in self.window_parent.alphabets:
+            if i == title:
+                self.infoLabel.setText("Алфавит с\nтаким названием\nуже существует")
+                return
+        if not title or not alphabet:
+            self.infoLabel.setText("Заполните все поля")
+            return
+        conn = sqlite3.connect("alphabets.db")
+        cur = conn.cursor()
+        cur.execute("""INSERT INTO Alphabets (title, alphabet) VALUES (?, ?)""", (title, alphabet))
+        conn.commit()
+        cur.close()
+        conn.close()
+        self.window_parent.update_list()
+        self.close()
+
+    def cancel_creating(self):
+        self.close()
+
+
+class DeleteAlphabet(QWidget):
+    def __init__(self, parent):
+        super().__init__()
+        uic.loadUi("uis/delete_alphabet.ui", self)
+        self.window_parent = parent
+        for i in parent.alphabets:
+            self.alphabetSelect.addItem(i)
+        self.delete_button.clicked.connect(self.delete_alphabet)
+        self.cancel_button.clicked.connect(self.cancel_adding)
+
+    def delete_alphabet(self):
+        title = self.alphabetSelect.currentText()
+        if not title:
+            self.infoLabel.setText("Не выбран алфавит")
+            return
+        conn = sqlite3.connect("alphabets.db")
+        cur = conn.cursor()
+        cur.execute("""DELETE FROM Alphabets WHERE title = ?""", (title, ))
+        conn.commit()
+        cur.close()
+        conn.close()
+        self.window_parent.update_list()
+        self.close()
+
+    def cancel_adding(self):
+        self.close()
 
 
 if __name__ == "__main__":

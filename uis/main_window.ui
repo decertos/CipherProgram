@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>189</width>
-    <height>313</height>
+    <width>188</width>
+    <height>392</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -93,7 +93,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>220</y>
+      <y>300</y>
       <width>151</width>
       <height>31</height>
      </rect>
@@ -102,13 +102,39 @@
      <string>Заготовки алфавитов</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="rails">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>220</y>
+      <width>151</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Рельсовое ограждение</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="rsa">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>260</y>
+      <width>151</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>RSA</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>189</width>
+     <width>188</width>
      <height>26</height>
     </rect>
    </property>
